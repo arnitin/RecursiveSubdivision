@@ -1,0 +1,30 @@
+##!nmake
+
+!include <win32.mak>
+
+TARGETS	= smooth.exe
+CFILES	= $(TARGETS:.exe=.c) glm.c gltb.c
+OBJECTS = $(CFILES:.c=.obj)
+LCFLAGS	= $(cflags) $(cdebug) 
+LLDLIBS	= $(lflags) $(ldebug) glut32.lib glu32.lib opengl32.lib $(guilibs) \
+
+#          -subsystem:windows -entry:mainCRTStartup
+
+default	: $(TARGETS)
+
+clean	:
+	@del *.obj
+
+clobber	: clean
+	@del *.exe
+
+$(TARGETS): $(OBJECTS)
+        $(link) -out:$@ $(OBJECTS) $(LLDLIBS)
+
+.c.obj	: 
+	$(CC) $(LCFLAGS) $<
+
+# dependencies (must come AFTER inference rules)
+smooth.exe	: glm.obj gltb.obj
+glm.c		: glm.h
+gltb.c		: gltb.h
